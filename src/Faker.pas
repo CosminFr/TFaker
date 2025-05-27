@@ -195,12 +195,38 @@ type
       'destruction', 'stale', 'basin', 'embarrass', 'rob', 'income', 'overjoyed', 'aback', 'spark', 'air', 'worthless', 'hospitable',
       'dynamic', 'push', 'nervous', 'dark', 'chin', 'shock', 'frame', 'dojo');
 
+    COUNTRY_NAMES: array[0..142] of string = ('Aruba', 'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina',
+      'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Belarus', 'Belgium', 'Bhutan',
+      'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Bulgaria', 'Burundi', 'Cambodia', 'Cameroon', 'Canada',
+      'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Congo', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus',
+      'Czechia', 'Denmark', 'Ecuador', 'Egypt', 'Estonia', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Georgia', 'Germany',
+      'Gibraltar', 'Greece', 'Greenland', 'Guam', 'Guatemala', 'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia',
+      'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kuwait', 'Kyrgyzstan',
+      'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Lithuania', 'Luxembourg', 'Macao', 'Madagascar', 'Malaysia',
+      'Maldives', 'Malta', 'Mauritania', 'Mexico', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique',
+      'Myanmar', 'Namibia', 'Nepal', 'Netherlands', 'New Caledonia', 'New Zealand', 'Nicaragua', 'Nigeria', 'Norway', 'Oman',
+      'Pakistan', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania',
+      'Rwanda', 'Samoa', 'Saudi Arabia', 'Senegal', 'Serbia', 'Singapore', 'Slovakia', 'Slovenia', 'Somalia', 'South Africa',
+      'South Korea', 'Spain', 'Sri Lanka', 'Sudan', 'Sweden', 'Switzerland', 'Tajikistan', 'Thailand', 'Timor-Leste', 'Togo',
+      'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkmenistan', 'Uganda', 'UK', 'Ukraine', 'United Arab Emirates', 'USA',
+      'Uzbekistan', 'Yemen', 'Zambia', 'Zimbabwe');
+
+    STREET_ABBREVS: array[0..38] of string = ('Aly', 'Ave', 'Blvd', 'Bvd', 'Cct', 'Cl', 'Cres', 'Cr', 'Ct', 'Dr', 'Esp',
+      'Fwy', 'Gdns', 'Gld', 'Glde', 'Gr', 'Grv', 'Hill', 'Hwy', 'Ln', 'Loop', 'Mews', 'Pde', 'Pl', 'Prom', 'Pkwy', 'Qy',
+      'Rd', 'Rdg', 'Rise', 'Row', 'Sq', 'St', 'Ter', 'Trak', 'Trk', 'Vw', 'Vale', 'Way');
+
+
     class function firstName: string;
     class function lastName: string;
     class function fullName: string;
     class function userName: string;
     class function email(aCustomDomain: string = ''): string;
     class function password: string;
+    class function country: string;
+    /// <summary>
+    /// Returns a random street as: <random number> <a last name> <a street abbrev>
+    /// </summary>
+    class function streetName: string;
 
     /// <summary>
     /// Return a birth date at where age is less than or equal to 100
@@ -279,13 +305,23 @@ end;
 
 class function TFaker.birthDate: TDate;
 begin
-  result := EncodeDate(RandomRange(yearof(date) - 100, yearof(date)), RandomRange(1, 12), RandomRange(1, 31));
+  result := Date - Random(365 * 100);     //A fake date -> extract a random number of days (today - 100 years)
 end;
 
 class function TFaker.userName: string;
 begin
   result := LowerCase(replace(TFaker.fullName, ['.']));
   result := replace(result, ' ', randVal(['.', '_', IntToStr(Random(999999))]));
+end;
+
+class function TFaker.country: string;
+begin
+  result := randVal(TFaker.COUNTRY_NAMES);
+end;
+
+class function TFaker.streetName: string;
+begin
+  result := Format('%d %s %s.', [Random(999), lastName, randVal(TFaker.STREET_ABBREVS)]);
 end;
 
 class function TFaker.email(aCustomDomain: string = ''): string;
